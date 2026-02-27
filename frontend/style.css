@@ -1,0 +1,13 @@
+body {
+  font-family: Arial;
+  padding: 40px;
+}
+
+input, select, button {
+  padding: 8px;
+  width: 250px;
+}
+
+button {
+  margin-top: 10px;
+}
