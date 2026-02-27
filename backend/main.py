@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
+from ocr import extract_text
 import os
 import shutil
 import uuid
@@ -33,9 +34,12 @@ async def upload_file(
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
+    # 🔹 OCR extraction
+    extracted_text = extract_text(file_path)
+
     return {
         "status": "success",
-        "file_saved": file_path,
         "department": department,
-        "document_type": document_type
+        "document_type": document_type,
+        "extracted_text": extracted_text
     }
