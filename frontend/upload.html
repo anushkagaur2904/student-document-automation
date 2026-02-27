@@ -1,33 +1,40 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Upload Document</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h2>Upload Student Application</h2>
+<form id="uploadForm">
+  <label>Department</label><br>
+  <select name="department">
+    <option>CSE</option>
+    <option>ISE</option>
+    <option>ECE</option>
+    <option>ME</option>
+  </select><br><br>
 
-  <form>
-    <label>Department</label><br>
-    <select>
-      <option>CSE</option>
-      <option>ISE</option>
-      <option>ECE</option>
-      <option>ME</option>
-    </select><br><br>
+  <label>Document Type</label><br>
+  <select name="document_type">
+    <option>Elective Change</option>
+    <option>Bonafide</option>
+    <option>NOC</option>
+    <option>Internship</option>
+  </select><br><br>
 
-    <label>Document Type</label><br>
-    <select>
-      <option>Elective Change</option>
-      <option>Bonafide</option>
-      <option>NOC</option>
-      <option>Internship</option>
-    </select><br><br>
+  <label>Upload File</label><br>
+  <input type="file" name="file" required><br><br>
 
-    <label>Upload File</label><br>
-    <input type="file"><br><br>
+  <button type="submit">Submit</button>
+</form>
 
-    <button type="submit">Submit</button>
-  </form>
-</body>
-</html>
+<p id="status"></p>
+
+<script>
+document.getElementById("uploadForm").onsubmit = async function(e){
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    const response = await fetch("http://127.0.0.1:8000/upload", {
+        method: "POST",
+        body: formData
+    });
+
+    const result = await response.json();
+    document.getElementById("status").innerText = "Upload Successful!";
+};
+</script>
