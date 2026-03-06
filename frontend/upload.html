@@ -1,46 +1,85 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Upload Application</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Application</title>
+  <style>
+    body { font-family: Arial; padding: 30px; max-width: 500px; margin: auto; }
+    label { font-weight: bold; display: block; margin-top: 15px; }
+    input { margin: 8px 0; padding: 10px; width: 100%; box-sizing: border-box; }
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover { background: #45a049; }
+    #status { margin-top: 15px; font-weight: bold; color: green; }
+    #error  { margin-top: 15px; font-weight: bold; color: red; }
+  </style>
 </head>
-
 <body>
 
-<h2>Upload Student Application</h2>
+  <h2>📄 Upload Student Application</h2>
 
-<form id="uploadForm">
+  <label>Upload from Gallery / Desktop:</label>
+  <input type="file" id="galleryInput" accept="image/*">
 
-<input type="file" name="file" accept="image/*" capture="environment" required>
+  <label>Take Photo (Mobile Camera):</label>
+  <input type="file" id="cameraInput" accept="image/*" capture="environment">
 
-<br><br>
+  <button onclick="uploadFile()">Upload</button>
 
-<button type="submit">Upload</button>
-
-</form>
-
-<p id="status"></p>
+  <p id="status"></p>
+  <p id="error"></p>
 
 <script>
+  async function uploadFile() {
 
-document.getElementById("uploadForm").onsubmit = async function(e){
+    const galleryFile = document.getElementById("galleryInput").files[0];
+    const cameraFile  = document.getElementById("cameraInput").files[0];
+    const file = galleryFile || cameraFile;
 
-e.preventDefault()
+    if (!file) {
+      document.getElementById("error").innerText  = "❌ Please select a file first.";
+      document.getElementById("status").innerText = "";
+      return;
+    }
 
-const formData = new FormData(this)
+    const formData = new FormData();
+    formData.append("file", file);
 
-const response = await fetch("http://127.0.0.1:8000/upload",{
-method:"POST",
-body:formData
-})
+    document.getElementById("status").innerText = "⏳ Uploading...";
+    document.getElementById("error").innerText  = "";
 
-const result = await response.json()
+    try {
+      const response = await fetch("http://YOUR_SERVER_IP:8000/upload", {
+        method: "POST",
+        body: formData
+      });
 
-document.getElementById("status").innerText="Upload Successful"
+      const result = await response.json();
+      console.log("Server response:", result);
 
-}
+      if (result.status === "success") {
+        document.getElementById("status").innerText =
+          "✅ Upload Successful!\nRequest ID: " + result.request_id +
+          "\nFile: " + result.filename;
+      } else {
+        document.getElementById("error").innerText = "❌ Upload failed.";
+      }
 
+    } catch (err) {
+      document.getElementById("error").innerText =
+        "❌ Could not connect to server. Make sure it is running and you are on the same WiFi.";
+      console.error(err);
+    }
+  }
 </script>
 
 </body>
