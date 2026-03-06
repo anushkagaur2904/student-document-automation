@@ -39,11 +39,37 @@
   <p id="error"></p>
 
 <script>
+  // Track which input was used last
+  let lastUsed = null;
+
+  document.getElementById("galleryInput").addEventListener("change", function() {
+    if (this.files[0]) {
+      lastUsed = "gallery";
+      document.getElementById("error").innerText = "";
+    }
+  });
+
+  document.getElementById("cameraInput").addEventListener("change", function() {
+    if (this.files[0]) {
+      lastUsed = "camera";
+      document.getElementById("error").innerText = "";
+    }
+  });
+
   async function uploadFile() {
 
     const galleryFile = document.getElementById("galleryInput").files[0];
     const cameraFile  = document.getElementById("cameraInput").files[0];
-    const file = galleryFile || cameraFile;
+
+    // Use whichever input was used last
+    let file;
+    if (lastUsed === "camera" && cameraFile) {
+      file = cameraFile;
+    } else if (lastUsed === "gallery" && galleryFile) {
+      file = galleryFile;
+    } else {
+      file = galleryFile || cameraFile;
+    }
 
     if (!file) {
       document.getElementById("error").innerText  = "❌ Please select a file first.";
