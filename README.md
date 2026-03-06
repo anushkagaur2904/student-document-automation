@@ -4,9 +4,20 @@ An AI-powered system that processes handwritten student applications and automat
 
 ---
 
-```
+## Starting the Server
+
+### On Windows
+```powershell
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
+
+### On Mac
+```bash
+source venv/bin/activate
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+---
 
 ## Accessing the Upload Page
 
@@ -19,10 +30,21 @@ http://127.0.0.1:8000/upload-page
 ```
 http://YOUR_LAPTOP_IP:8000/upload-page
 ```
-To find your laptop IP, run this in PowerShell:
+
+#### Finding your IP address
+
+**Windows** — run in PowerShell:
 ```powershell
 ipconfig
 ```
 Look for **IPv4 Address** under **Wireless LAN adapter Wi-Fi**.
 
-Note : **Moblie Data** should be **OFF** while testing.
+**Mac** — run in Terminal:
+```bash
+ifconfig | grep "inet " | grep -v 127.0.0.1
+```
+Look for the address starting with **192.168.x.x**.
+
+> **Note:** Mobile Data should be **OFF** while testing on phone.
+
+---
